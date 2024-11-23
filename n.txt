@@ -1,0 +1,95 @@
+from my_app.py import Widget
+
+txt_title = "Здоровье"
+win_x, win_y = 200, 100
+win_width, win_height = 1000, 500
+
+# Главный класс окна
+class MainWin(Widget):
+    def set_appear(self):
+        # Установка заголовка окна
+        self.window_title = txt_title
+        # Изменение размеров окна
+        self.window_width = win_width
+        self.window_height = win_height
+        # Указание позиции окна на экране
+        self.window_position = (win_x, win_y)
+
+window = MainWin()
+window.set_appear()
+txt_hello = "Добро пожаловать в программу по определению состояния здоровья!"
+txt_instruction = (
+    "Данное приложение позволит вам с помощью теста Руфье провести первичную диагностику вашего здоровья.
+    "Проба Руфье представляет собой нагрузочный комплекс, предназначенный для оценки работоспособности сердца при физической нагрузке.
+    "У испытуемого, находящегося в положении лежа на спине в течение 5 минут, определяют частоту пульса за 15 секунд.
+    "Затем в течение 45 секунд испытуемый выполняет 30 приседаний.
+    "После окончания нагрузки испытуемый ложится, и у него вновь подсчитывается число пульсаций за первые 15 секунд, "
+    "а потом за последние 15 секунд первой минуты периода восстановления.
+    "Важно! Если в процессе проведения испытания вы почувствуете себя плохо (появится головокружение, шум в ушах, сильная одышка и др.), "
+    "то тест необходимо прервать и обратиться к врачу."
+)
+txt_next = "Начать"
+
+
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
+
+class TestWin(QWidget):
+    def _init_(self):
+        super()._init_()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle("Тест Руфье")
+        self.layout = QVBoxLayout()
+
+        self.label = QLabel("Экран теста Руфье")
+        self.layout.addWidget(self.label)
+
+        self.setLayout(self.layout)
+
+
+
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout
+from instr import txt_hello, txt_instruction, txt_next
+from second_win import TestWin
+
+
+class MainWin(QWidget):
+    def _init_(self):
+        super()._init_()
+        self.initUI()
+        self.connects()
+
+    def initUI(self):
+        self.setWindowTitle("Программа диагностики здоровья")
+        self.layout = QVBoxLayout()
+
+        # Создаем виджеты
+        self.hello_text = QLabel(txt_hello)
+        self.instruction = QLabel(txt_instruction)
+        self.btn_next = QPushButton(txt_next)
+
+        
+        self.layout.addWidget(self.hello_text)
+        self.layout.addWidget(self.instruction)
+        self.layout.addWidget(self.btn_next)
+
+        
+        self.setLayout(self.layout)
+
+    def connects(self):
+        self.btn_next.clicked.connect(self.next_click)
+
+    def next_click(self):
+        self.hide()
+        self.tw = TestWin()
+        self.tw.show()
+
+
+# Главная функция для запуска приложения
+if _name_ == "_main_":
+    app = QApplication(sys.argv)
+    main_window = MainWin()
+    main_window.show()
+    sys.exit(app.exec_())
